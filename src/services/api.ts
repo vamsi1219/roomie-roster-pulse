@@ -165,9 +165,64 @@ export const api = {
   },
   
   getQueryById: async (id: string): Promise<Query | undefined> => {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 600));
-    return undefined;
+    try {
+      const response = await fetch(`${API_URL}/queries/${id}`);
+      
+      if (!response.ok) {
+        throw new Error('Query not found');
+      }
+      
+      return await response.json();
+    } catch (error) {
+      toast.error('Failed to fetch query details');
+      return undefined;
+    }
+  },
+  
+  replyToQuery: async (queryId: string, reply: Omit<QueryReply, 'id' | 'createdAt'>): Promise<Query> => {
+    try {
+      const response = await fetch(`${API_URL}/queries/${queryId}/replies`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reply),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to add reply');
+      }
+      
+      const updatedQuery = await response.json();
+      toast.success('Reply added successfully');
+      return updatedQuery;
+    } catch (error) {
+      toast.error('Failed to add reply');
+      throw error;
+    }
+  },
+  
+  updateQueryStatus: async (queryId: string, status: 'pending' | 'in-progress' | 'resolved'): Promise<Query> => {
+    try {
+      const response = await fetch(`${API_URL}/queries/${queryId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update query status');
+      }
+      
+      const updatedQuery = await response.json();
+      toast.success(`Query status updated to ${status}`);
+      return updatedQuery;
+    } catch (error) {
+      toast.error('Failed to update query status');
+      throw error;
+    }
   },
   
   getAnnouncements: async (): Promise<Announcement[]> => {
@@ -259,7 +314,6 @@ export const api = {
     }
   },
   
-  // Student specific APIs
   getStudentRoom: async (studentId: string): Promise<Room | null> => {
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 500));
