@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { api, Room, User } from "@/services/api";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -18,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/components/ui/sonner";
 
 const RoomsPage = () => {
@@ -282,16 +281,14 @@ const OccupancyBadge = ({ current, capacity }: { current: number, capacity: numb
   }
   
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Badge className={badgeColor}>{badgeText}</Badge>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{current} out of {capacity} beds occupied</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Badge className={badgeColor}>{badgeText}</Badge>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{current} out of {capacity} beds occupied</p>
+      </TooltipContent>
+    </Tooltip>
   );
 };
 
